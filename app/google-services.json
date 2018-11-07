@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "275779647211",
+    "firebase_url": "https://samplemarvel.firebaseio.com",
+    "project_id": "samplemarvel",
+    "storage_bucket": "samplemarvel.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:275779647211:android:37ac8f2d581f3ba2",
+        "android_client_info": {
+          "package_name": "com.eslimaf.coroutines"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "275779647211-31lm1mqajcgvj7c9m8qtmj27gfc215vi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFDVSAh4j9XXM3Ac5HWbSTIxD0HvjKBEg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
