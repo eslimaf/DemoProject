@@ -39,7 +39,7 @@ class DetailsFragment : Fragment() {
     private val characterStoriesObserver by lazy {
         Observer<List<Series>> { stories ->
             storiesListAdapter.setStories(stories)
-            detailsStoriesRecyclerView.visible(true)
+            detailsSeriesRecyclerView.visible(true)
         }
     }
 
@@ -54,9 +54,9 @@ class DetailsFragment : Fragment() {
         }).observe(this, characterComicsObserver)
 
         viewModel.loadCharacterStories(character.id, { show ->
-            detailsStoriesProgress.visible(show)
+            detailsSeriesProgress.visible(show)
         }, {
-            detailsStoriesError.visible(true)
+            detailsSeriesError.visible(true)
         }
         ).observe(this, characterStoriesObserver)
     }
@@ -80,9 +80,9 @@ class DetailsFragment : Fragment() {
                 LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
         detailsComicsRecyclerView.adapter = comicsListAdapter
 
-        detailsStoriesRecyclerView.layoutManager =
+        detailsSeriesRecyclerView.layoutManager =
                 LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
-        detailsStoriesRecyclerView.adapter = storiesListAdapter
+        detailsSeriesRecyclerView.adapter = storiesListAdapter
     }
 
     companion object {
