@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.eslimaf.coroutines.data.marvel.MarvelService
 import com.eslimaf.coroutines.data.marvel.api.model.entity.Comic
+import com.eslimaf.coroutines.data.marvel.api.model.entity.Series
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -15,21 +16,18 @@ class DetailsViewModel : ViewModel(), CoroutineScope {
     private val job = Job()
     override val coroutineContext = job + Dispatchers.Main
 
-    //Syntax sugary and cinnamon
-    private var shouldShowLoader: ((Boolean) -> Unit)? = null
-
     override fun onCleared() {
         // Cancel any pending coroutines
         job.cancel()
         super.onCleared()
     }
 
-    fun showLoader(showLoaderListener: (Boolean) -> Unit) {
-        shouldShowLoader = showLoaderListener
-    }
-
-    fun loadCharacterComics(id: Int): LiveData<List<Comic>> {
-        shouldShowLoader?.invoke(true)
+    fun loadCharacterComics(
+        id: Int,
+        loader: ((Boolean) -> Unit) = {},
+        error: (Exception) -> Unit = {}
+    ): LiveData<List<Comic>> {
+        loader(true)
         val result = MutableLiveData<List<Comic>>()
         launch {
             try {
@@ -37,8 +35,31 @@ class DetailsViewModel : ViewModel(), CoroutineScope {
                 result.value = response.dataContainer.results
             } catch (e: Exception) {
                 Log.e("REQUEST_ERROR", e.message)
+                error(e)
             } finally {
-                shouldShowLoader?.invoke(false)
+                loader(false)
+            }
+        }
+
+        return result
+    }
+
+    fun loadCharacterStories(
+        id: Int,
+        loader: (Boolean) -> Unit = {},
+        error: (Exception) -> Unit = {}
+    ): LiveData<List<Series>> {
+        loader(true)
+        val result = MutableLiveData<List<Series>>()
+        launch {
+            try {
+                val response = MarvelService.loadCharacterSeries(id)
+                result.value = response.dataContainer.results
+            } catch (e: Exception) {
+                Log.e("REQUEST_ERROR", e.message)
+                error(e)
+            } finally {
+                loader(false)
             }
         }
 

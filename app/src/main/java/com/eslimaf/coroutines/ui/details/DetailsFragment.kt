@@ -12,7 +12,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.eslimaf.coroutines.R
 import com.eslimaf.coroutines.data.marvel.api.model.entity.Character
 import com.eslimaf.coroutines.data.marvel.api.model.entity.Comic
+import com.eslimaf.coroutines.data.marvel.api.model.entity.Series
 import com.eslimaf.coroutines.extensions.load
+import com.eslimaf.coroutines.extensions.visible
 import kotlinx.android.synthetic.main.fragment_details.*
 
 /**
@@ -24,12 +26,20 @@ import kotlinx.android.synthetic.main.fragment_details.*
 class DetailsFragment : Fragment() {
     private lateinit var character: Character
     private val comicsListAdapter = ComicsListAdapter()
+    private val storiesListAdapter = SeriesListAdapter()
     private lateinit var viewModel: DetailsViewModel
 
     private val characterComicsObserver by lazy {
         Observer<List<Comic>> { comics ->
             comicsListAdapter.setComics(comics)
-            detailsComicsRecyclerView.visibility = View.VISIBLE
+            detailsComicsRecyclerView.visible(true)
+        }
+    }
+
+    private val characterStoriesObserver by lazy {
+        Observer<List<Series>> { stories ->
+            storiesListAdapter.setStories(stories)
+            detailsStoriesRecyclerView.visible(true)
         }
     }
 
@@ -37,11 +47,18 @@ class DetailsFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(DetailsViewModel::class.java)
 
-        viewModel.showLoader { show ->
-            detailsComicsProgress.visibility = if (show) View.VISIBLE else View.GONE
-        }
+        viewModel.loadCharacterComics(character.id, { show ->
+            detailsComicsProgress.visible(show)
+        }, {
+            detailsComicError.visible(true)
+        }).observe(this, characterComicsObserver)
 
-        viewModel.loadCharacterComics(character.id).observe(this, characterComicsObserver)
+        viewModel.loadCharacterStories(character.id, { show ->
+            detailsStoriesProgress.visible(show)
+        }, {
+            detailsStoriesError.visible(true)
+        }
+        ).observe(this, characterStoriesObserver)
     }
 
     override fun onCreateView(
@@ -62,6 +79,10 @@ class DetailsFragment : Fragment() {
         detailsComicsRecyclerView.layoutManager =
                 LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
         detailsComicsRecyclerView.adapter = comicsListAdapter
+
+        detailsStoriesRecyclerView.layoutManager =
+                LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
+        detailsStoriesRecyclerView.adapter = storiesListAdapter
     }
 
     companion object {

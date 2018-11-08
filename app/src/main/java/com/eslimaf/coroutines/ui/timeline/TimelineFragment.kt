@@ -10,13 +10,13 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.eslimaf.coroutines.R
 import com.eslimaf.coroutines.data.marvel.api.model.entity.Character
+import com.eslimaf.coroutines.extensions.visible
 import com.eslimaf.coroutines.ui.details.DetailsFragment
 import kotlinx.android.synthetic.main.timeline_fragment.*
 
 class TimelineFragment : Fragment(), TimelineListAdapter.OnItemClickListener {
 
     companion object {
-        const val FRAG_ID = "TimelineFragment"
         fun newInstance() = TimelineFragment()
     }
 
@@ -42,9 +42,17 @@ class TimelineFragment : Fragment(), TimelineListAdapter.OnItemClickListener {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(TimelineViewModel::class.java)
+        viewModel.setShowLoaderListener { show ->
+            timelineProgress.visible(if (show) true else null)
+        }
+
+        viewModel.setShowErrorListener { show ->
+            timelineError.visible(if (show) true else null)
+        }
+
         timelineRecyclerView.layoutManager = LinearLayoutManager(this.context)
         timelineRecyclerView.adapter = adapter
-        viewModel.loadWithClass(4).observe(this, characterObserver)
+        viewModel.loadWithClass(10).observe(this, characterObserver)
     }
 
     override fun onItemClick(character: Character) {

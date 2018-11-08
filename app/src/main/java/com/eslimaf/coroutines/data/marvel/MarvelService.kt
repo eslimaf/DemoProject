@@ -6,6 +6,7 @@ import com.eslimaf.coroutines.constants.Constants.PUB_KEY
 import com.eslimaf.coroutines.data.marvel.api.model.ApiResponse
 import com.eslimaf.coroutines.data.marvel.api.model.entity.Character
 import com.eslimaf.coroutines.data.marvel.api.model.entity.Comic
+import com.eslimaf.coroutines.data.marvel.api.model.entity.Series
 import com.eslimaf.coroutines.extensions.md5
 import com.google.firebase.perf.FirebasePerformance
 import com.google.gson.GsonBuilder
@@ -30,13 +31,14 @@ object MarvelService {
 
     fun loadCharacters(page: Int = 0): Call<ApiResponse<Character>> = api.getCharacters(page * 20)
 
-    suspend fun loadChars(page: Int = 0): ApiResponse<Character> = api.getCharactersEx(page).await()
-
-    suspend fun loadCharacterDetails(id: Int): ApiResponse<Character> =
-        api.getCharacterDetails(id).await()
+    suspend fun loadChars(page: Int = 0): ApiResponse<Character> =
+        api.getCharactersEx(page * 20).await()
 
     suspend fun loadCharacterComics(id: Int): ApiResponse<Comic> =
         api.getCharacterComics(id).await()
+
+    suspend fun loadCharacterSeries(id: Int): ApiResponse<Series> =
+        api.getCharacterSeries(id).await()
 
     //region Providers
     private fun provideOkHttpClient(): OkHttpClient {
