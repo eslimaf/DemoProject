@@ -20,6 +20,6 @@ cache:
     - $HOME/.android/build-cache
 
 script:
-  - echo $TRAVIS_TAG
-  - echo $TRAVIS_BRANCH
-  - echo $TRAVIS_COMMIT
+  - echo "Tag: $TRAVIS_TAG"
+  - echo "Branch: $TRAVIS_BRANCH"
+  - echo "Commit: $TRAVIS_COMMIT"
